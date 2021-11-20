@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
+    <title>Calculator</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
@@ -23,7 +23,7 @@
       class Calculator {
         constructor() {
           this.buttons = [{'CE': 'global clear'}, {'C': 'clear'}, {'NEG': 'negative'}, {'/': 'divide'},
-          {'7': '7'}, {'8': '8'}, {'9': '9'}, {'x': 'multiply'}, {'4': '4'}, {'5': '5'}, {'6': '6'},
+          {'7': '7'}, {'8': '8'}, {'9': '9'}, {'*': 'multiply'}, {'4': '4'}, {'5': '5'}, {'6': '6'},
           {'-': 'subtract'}, {'1': '1'}, {'2': '2'}, {'3': '3'}, {'+': 'add'}, {'0': '0'}, {'.': 'point'},
           {'%': 'percent'}, {'=': 'equals'}];
           this.total = 0;
@@ -71,12 +71,17 @@
           const buttonWrapperDiv = document.querySelector('.btn-wrapper');
           buttonTags.forEach(obj => {
             const tag = Object.values(obj)[0];
-            const value = Object.keys(obj)[0]
+            const value = Object.keys(obj)[0];
 
             const button = document.createElement('span');
             button.classList.add('btn');
             button.setAttribute('data-id', tag);
             button.textContent = value;
+            if (['C', 'CE'].includes(value)) {
+              button.classList.add('c-ce');
+            } else if (['/', '*', '+', '-', '='].includes(value)) {
+              button.classList.add('op');
+            }
 
             buttonWrapperDiv.appendChild(button);
           });
@@ -219,7 +224,7 @@
 
         redrawCalculatorScreen() {
           const resultSectionScreen = document.getElementById('bottom-section');
-          resultSectionScreen.textContent = this.total;
+          resultSectionScreen.textContent = this.total || this.currentNumber;
         }
 
       }
