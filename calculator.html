@@ -9,11 +9,15 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div id="wrapper">
+
+    </div>
     <script>
 // TODO add change skins functionality, add buttons for that
       document.addEventListener('DOMContentLoaded', (event) => {
         const calculator = new Calculator();
-        calculator.draw();
+        calculator.drawScreen();
+        calculator.drawButtonSecton();
       });
 
       class Calculator {
@@ -28,38 +32,31 @@
           this.currentNumber = 0; // window bottom part
         }
 
-        draw() {
-          const wrapperDiv = document.createElement('div');
-          wrapperDiv.setAttribute('id', 'wrapper');
-
+        drawScreen() {
+          const wrapperDiv = document.getElementById('wrapper');
           const screenDiv = document.createElement('div');
           screenDiv.setAttribute('id', 'screen');
-
           const topPartScreen = document.createElement('div');
-          const bottomPartScreen = document.createElement('div');
+          topPartScreen.setAttribute('id', 'top-section');
 
+          const bottomPartScreen = document.createElement('div');
+          bottomPartScreen.setAttribute('id', 'bottom-section');
+          
           screenDiv.appendChild(topPartScreen);
           screenDiv.appendChild(bottomPartScreen);
-
           wrapperDiv.appendChild(screenDiv);
-
+          
+        }
+        
+        drawButtonSecton() {
+          const wrapperDiv = document.getElementById('wrapper');
+          wrapperDiv.setAttribute('id', 'wrapper');
           const buttonsDiv = document.createElement('div');
           buttonsDiv.classList.add('btn-wrapper');
 
           wrapperDiv.appendChild(buttonsDiv);
-
           document.body.appendChild(wrapperDiv);
-
           this.createButtons();
-          
-        }
-
-        add(val) {
-          this.total += val;
-        }
-
-        subtract(val) {
-          this.total -= val;
         }
 
         isAnOperation(dataId) {
@@ -88,9 +85,10 @@
 
         addButtonFunctionality() {
           const buttonWrapperDiv = document.querySelector('.btn-wrapper');
+
           buttonWrapperDiv.addEventListener('click', event => {
+            // extract this callback
             event.stopPropagation();
-            console.log(this);
             const target = event.target;
             
             if (target.classList.contains('btn')) {
@@ -98,23 +96,22 @@
               // console.log(dataIdAttr);
 
               if (this.isAnOperation(dataIdAttr)) {
-
-
                 this.handleOperation(dataIdAttr);
 
               } else { // it is a number
                 let pressedDigit = parseInt(target.textContent, 10);
 
-                if (this.currentNumber === 0) {
+                if (this.currentNumber === 0 || this.lastOperation) {
                   this.currentNumber = pressedDigit;
                 } else {
                   this.currentNumber = Number(String(this.currentNumber) + String(pressedDigit));
                 }
 
-                  //redraw bottom screen
-              
+                
               }
             }
+            this.redrawCalculatorScreen();
+            console.log(this);
           })
         }
 
@@ -183,6 +180,7 @@
 
         setLastOperation(op) {
           this.lastOperation = op;
+          this.subtotal = this.currentNumber;
         }
 
         handleEquals() {
@@ -208,12 +206,20 @@
               case '+':
                 this.total = this.subtotal + this.currentNumber;
                 break;
-            } 
+            }
+            this.currentNumber = this.total; 
+            this.subtotal = this.total;
+            this.lastOperation = '';
 
           } else {
             //
           }
           // console.log(this)
+        }
+
+        redrawCalculatorScreen() {
+          const resultSectionScreen = document.getElementById('bottom-section');
+          resultSectionScreen.textContent = this.total;
         }
 
       }
