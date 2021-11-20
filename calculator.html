@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <script>
+
+      document.addEventListener("DOMContentLoaded", (event) => {
+        const calculator = new Calculator();
+        calculator.draw();
+        calculator.createButtons();
+      });
+
+      class Calculator {
+        constructor() {
+          this.total = 0;
+          this.lastOperation = "";
+          this.windowTopPart = "";
+          this.windowBottomPart = "";
+        }
+
+        draw() {
+          const wrapperDiv = document.createElement("div");
+          wrapperDiv.setAttribute("id", "wrapper");
+
+          const screenDiv = document.createElement("div");
+          screenDiv.setAttribute("id", "screen");
+
+          const topPartScreen = document.createElement("div");
+          const bottomPartScreen = document.createElement("div");
+
+          screenDiv.appendChild(topPartScreen);
+          screenDiv.appendChild(bottomPartScreen);
+
+          wrapperDiv.appendChild(screenDiv);
+
+          const buttonsDiv = document.createElement("div");
+          buttonsDiv.classList.add("btn-wrapper");
+
+          wrapperDiv.appendChild(buttonsDiv);
+
+          document.body.appendChild(wrapperDiv);
+        }
+
+        add(val) {
+          this.total += val;
+        }
+
+        subtract(val) {
+          this.total -= val;
+        }
+
+        multiply()
+
+        createButtons() {
+          // C - global clear
+          // ce - clear entry
+          //TODO change order of objects so that the buttons appear in the right order
+          const buttonTags = [{'CE': 'global clear'}, {'C': 'clear'}, {'NEG': 'negative'}, {'/': 'divide'},
+                              {'x': 'multiply'}, {'-': 'subtract'}, {'+': 'add'}, {'=': 'equals'}, 
+                              {'%': 'percent'}, {'.': 'point'}, {'0': '0'}, {'1': '1'}, {'2': '2'},
+                              {'3': '3'}, {'4': '4'}, {'5': '5'}, {'6': '6'}, {'7': '7'}, {'8': '8'}, {'9': '9'} ]
+
+          const buttonWrapperDiv = document.querySelector('.btn-wrapper');
+
+          buttonTags.forEach(obj => {
+            const tag = Object.values(obj)[0];
+            const value = Object.keys(obj)[0]
+            console.log(tag)
+            const button = document.createElement('span');
+            button.classList.add('btn');
+            button.setAttribute('data-id', tag);
+            button.textContent = value;
+
+            buttonWrapperDiv.appendChild(button);
+          })
+        }
+
+      }
+    </script>
+  </body>
+</html>
