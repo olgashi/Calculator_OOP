@@ -106,11 +106,19 @@
               } else { // it is a number
                 let pressedDigit = parseInt(target.textContent, 10);
 
-                if (this.currentNumber === 0 || this.lastOperation) {
+                if (this.lastOperation === '=') {
+                  this.total = 0;
+                  this.lastOperation = '';
+                  this.subtotal = 0;
                   this.currentNumber = pressedDigit;
                 } else {
-                  this.currentNumber = Number(String(this.currentNumber) + String(pressedDigit));
+                  if (this.currentNumber === 0 || this.lastOperation) {
+                    this.currentNumber = pressedDigit;
+                  } else {
+                    this.currentNumber = Number(String(this.currentNumber) + String(pressedDigit));
+                  }
                 }
+
 
                 
               }
@@ -214,7 +222,7 @@
             }
             this.currentNumber = this.total; 
             this.subtotal = this.total;
-            this.lastOperation = '';
+            this.lastOperation = '=';
 
           } else {
             //
