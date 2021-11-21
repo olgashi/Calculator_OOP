@@ -9,232 +9,241 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="wrapper">
-
-    </div>
+    <div id="wrapper"></div>
     <script>
-// TODO add change skins functionality, add buttons for that
-      document.addEventListener('DOMContentLoaded', (event) => {
-        const calculator = new Calculator();
-        calculator.drawScreen();
-        calculator.drawButtonSecton();
-      });
+      // TODO add change skins functionality, add buttons for that
+            document.addEventListener('DOMContentLoaded', (event) => {
+              const calculator = new Calculator();
+              calculator.drawScreen();
+              calculator.drawButtonSecton();
+              calculator.bindEvents();
+            });
 
-      class Calculator {
-        constructor() {
-          this.buttons = [{'CE': 'global clear'}, {'C': 'clear'}, {'NEG': 'negative'}, {'/': 'divide'},
-          {'7': '7'}, {'8': '8'}, {'9': '9'}, {'*': 'multiply'}, {'4': '4'}, {'5': '5'}, {'6': '6'},
-          {'-': 'subtract'}, {'1': '1'}, {'2': '2'}, {'3': '3'}, {'+': 'add'}, {'0': '0'}, {'.': 'point'},
-          {'%': 'percent'}, {'=': 'equals'}];
-          this.total = 0;
-          this.lastOperation = '';
-          this.subtotal = 0; // window top part
-          this.currentNumber = 0; // window bottom part
-        }
+            class Calculator {
+              constructor() {
+                this.buttons = [{'CE': 'global clear'}, {'C': 'clear'}, {'NEG': 'negative'}, {'/': 'divide'},
+                {'7': '7'}, {'8': '8'}, {'9': '9'}, {'*': 'multiply'}, {'4': '4'}, {'5': '5'}, {'6': '6'},
+                {'-': 'subtract'}, {'1': '1'}, {'2': '2'}, {'3': '3'}, {'+': 'add'}, {'0': '0'}, {'.': 'point'},
+                {'%': 'percent'}, {'=': 'equals'}];
+                // this.total = 0;
+                // this.lastOperation = '';
+                // this.subtotal = 0; // window top part
+                // this.currentNumber = 0; // window bottom part
 
-        drawScreen() {
-          const wrapperDiv = document.getElementById('wrapper');
-          const screenDiv = document.createElement('div');
-          screenDiv.setAttribute('id', 'screen');
-          const topPartScreen = document.createElement('div');
-          topPartScreen.setAttribute('id', 'top-section');
-
-          const bottomPartScreen = document.createElement('div');
-          bottomPartScreen.setAttribute('id', 'bottom-section');
-          
-          screenDiv.appendChild(topPartScreen);
-          screenDiv.appendChild(bottomPartScreen);
-          wrapperDiv.appendChild(screenDiv);
-          
-        }
-        
-        drawButtonSecton() {
-          const wrapperDiv = document.getElementById('wrapper');
-          wrapperDiv.setAttribute('id', 'wrapper');
-          const buttonsDiv = document.createElement('div');
-          buttonsDiv.classList.add('btn-wrapper');
-
-          wrapperDiv.appendChild(buttonsDiv);
-          document.body.appendChild(wrapperDiv);
-          this.createButtons();
-        }
-
-        isAnOperation(dataId) {
-          return Number.isNaN(parseInt(dataId, 10));
-        }
-
-        createButtons() {
-          // C - global clear
-          // ce - clear entry
-          const buttonTags = this.buttons;
-          
-          const buttonWrapperDiv = document.querySelector('.btn-wrapper');
-          buttonTags.forEach(obj => {
-            const tag = Object.values(obj)[0];
-            const value = Object.keys(obj)[0];
-
-            const button = document.createElement('span');
-            button.classList.add('btn');
-            button.setAttribute('data-id', tag);
-            button.textContent = value;
-            if (['C', 'CE'].includes(value)) {
-              button.classList.add('c-ce');
-            } else if (['/', '*', '+', '-', '='].includes(value)) {
-              button.classList.add('op');
-            }
-
-            buttonWrapperDiv.appendChild(button);
-          });
-          this.addButtonFunctionality();
-        }
-
-        addButtonFunctionality() {
-          const buttonWrapperDiv = document.querySelector('.btn-wrapper');
-
-          buttonWrapperDiv.addEventListener('click', event => {
-            // extract this callback
-            event.stopPropagation();
-            const target = event.target;
-            
-            if (target.classList.contains('btn')) {
-              const dataIdAttr = target.getAttribute('data-id');
-              // console.log(dataIdAttr);
-
-              if (this.isAnOperation(dataIdAttr)) {
-                this.handleOperation(dataIdAttr);
-
-              } else { // it is a number
-                let pressedDigit = parseInt(target.textContent, 10);
-
-                if (this.lastOperation === '=') {
-                  this.total = 0;
-                  this.lastOperation = '';
-                  this.subtotal = 0;
-                  this.currentNumber = pressedDigit;
-                } else {
-                  if (this.currentNumber === 0 || this.lastOperation) {
-                    this.currentNumber = pressedDigit;
-                  } else {
-                    this.currentNumber = Number(String(this.currentNumber) + String(pressedDigit));
-                  }
-                }
-
+                this.operationsScreen = document.querySelector('#screen #top-section'); // top part
+                this.currentNumScreen = document.querySelector('#screen #bottom-section'); // bottom part
+                this.result = 0;
+                this.currentOp = '+';
+                this.resultStatus =  false;
 
                 
               }
-            }
-            this.redrawCalculatorScreen();
-            console.log(this);
-          })
-        }
 
-        handleOperation(op) {
-          // console.log(op);
-          switch (op) {
-            case 'global clear':
-              this.handleGlobalClear();
-              break;
+              drawScreen() {
+                const wrapperDiv = document.getElementById('wrapper');
+                const screenDiv = document.createElement('div');
+                screenDiv.setAttribute('id', 'screen');
+                const topPartScreen = document.createElement('div');
+                topPartScreen.setAttribute('id', 'top-section');
 
-            case 'clear':
-              this.handleClear();
-              break;
+                const bottomPartScreen = document.createElement('div');
+                bottomPartScreen.setAttribute('id', 'bottom-section');
 
-            case 'negative':
-              this.handleNegative();
-              break;
+                screenDiv.appendChild(topPartScreen);
+                screenDiv.appendChild(bottomPartScreen);
+                wrapperDiv.appendChild(screenDiv);
 
-            case 'divide':
-              this.setLastOperation('/');
-              break;
+              }
 
-            case 'multiply':
-              this.setLastOperation('*');
-                break;
+              drawButtonSecton() {
+                const wrapperDiv = document.getElementById('wrapper');
+                wrapperDiv.setAttribute('id', 'wrapper');
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.classList.add('btn-wrapper');
 
-            case 'subtract':
-              this.setLastOperation('-');
-              break;
+                wrapperDiv.appendChild(buttonsDiv);
+                document.body.appendChild(wrapperDiv);
+                this.createButtons();
+              }
 
-            case 'add':
-                this.setLastOperation('+');
-              break;
+              isAnOperation(dataId) {
+                return Number.isNaN(parseInt(dataId, 10));
+              }
 
-            case 'point':
-              // TODO
-              break;
+              createButtons() {
+                // C - global clear
+                // ce - clear entry
+                const buttonTags = this.buttons;
 
-            case 'percent':
-              // TODO
-              break;
+                const buttonWrapperDiv = document.querySelector('.btn-wrapper');
+                buttonTags.forEach(obj => {
+                  const tag = Object.values(obj)[0];
+                  const value = Object.keys(obj)[0];
 
-            case 'equals':
-              this.handleEquals();
-              break;
-            default:
-              throw new Error('Unknown operation');
+                  const button = document.createElement('span');
+                  button.classList.add('btn');
+                  button.setAttribute('data-id', tag);
+                  button.textContent = value;
+                  if (['C', 'CE'].includes(value)) {
+                    button.classList.add('c-ce');
+                    if (value === 'C') {
+                      button.classList.add('clearAll')
+                    } else if (value ==='CE') {
+                      button.classList.add('clear');
+                    }
+                  } else if (['/', '*', '+', '-'].includes(value)) {
+                    button.classList.add('op');
+                  } else if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(value)) {
+                    button.classList.add('digit');
+                  } else if (value === '=') {
+                    button.classList.add('result');
+                  } else if (value==='NEG') {
+                     button.classList.add('neg');
+                  } else if (value === '.') {
+                    button.classList.add('point');
+                  }
 
-          }
-        }
-        handleGlobalClear() {
-          // console.log('clicked global clear');
-          this.total = 0;
-          this.subtotal = 0;
-          this.currentNumber = 0;
-          this.lastOperation = '';
-        }
+                  buttonWrapperDiv.appendChild(button);
+                });
+              }
 
-        handleClear() {
-          this.currentNumber = 0;
-        }
+              printDigit(digit) {
+                if (this.currentNumScreen.textContent === '0') {
+                  this.clearCurrNumScreen();
+                }
 
-        handleNegative() {
-          this.currentNumber = Math.abs(this.currentNumber) * -1;
-        }
+                if (this.resultStatus) {
+                  this.clearCurrNumScreen();
+                  this.resultStatus = false;
+                }
 
-        setLastOperation(op) {
-          this.lastOperation = op;
-          this.subtotal = this.currentNumber;
-        }
+                this.printToNumScreen(digit);
+              }
 
-        handleEquals() {
-          // console.log('clicked equals');
-          if (this.lastOperation) {
-            if (this.subtotal === 0) {
-              this.subtotal = this.currentNumber;
-            }
+              handleDigitClick(event) {
+                event.preventDefault();
+                // console.log(event.target.textContent)
+                console.log(this)
+                this.printDigit(event.target.textContent);
+              }
 
-            switch (this.lastOperation) {
-              case '/':
-                this.total = this.subtotal / this.currentNumber;
-                break;
+              handleOpClick(event) {
+                event.preventDefault();
+                this.printOperator(event.target.textContent.trim());
+              }
 
-              case '*':
-                this.total = this.subtotal * this.currentNumber;
-                break;
+              clearAll(event) {
+                this.clear(event);
+                this.clearOpScreen();
+                res.reset();
+              }
 
-              case '-':
-                this.total = this.subtotal - this.currentNumber;
-                break;
+              clear(event) {
+                event.preventDefault();
+                this.cleaCurrNumScreen();
+                this.currNumScreen.textContent = '0';
+              }
 
-              case '+':
-                this.total = this.subtotal + this.currentNumber;
-                break;
-            }
-            this.currentNumber = this.total; 
-            this.subtotal = this.total;
-            this.lastOperation = '=';
+              handleResClick(event) {
+                event.preventDefault();
 
-          } else {
-            //
-          }
-          // console.log(this)
-        }
+                this.calculateResult();
+                this.clearOpScreen();
+                this.reset();
+              }
 
-        redrawCalculatorScreen() {
-          const resultSectionScreen = document.getElementById('bottom-section');
-          resultSectionScreen.textContent = this.total || this.currentNumber;
-        }
+              handleDotClick(event) {
+                event.preventDefault();
 
+                if (this.currentNumScreen.textContent.indexOf('.') === 1) {
+                  this.printToNumScreen('.');
+                }
+              }
+
+              reset() {
+                this.result = 0;
+                this.currentOp = '+';
+              }
+
+              printOperator(operator) {
+                let prevOperationText = this.operationsScreen.textContent;
+                let numAndOpToAdd = this.currentNumScreen.textContent + ' ' + operator + ' ';
+                this.calculateResult();
+                this.currentOp = operator;
+                this.operationsScreen.textContent = prevOperationText + numAndOpToAdd;
+              }
+
+              cleaCurrNumScreen() {
+                this.currentNumScreen.textContent = '';
+              }
+
+              clearOpScreen() {
+                this.operationsScreen.textContent = '';
+              }
+
+              calculateResult() {
+                let currentNumScreen = this.currentNumScreen.textContent;
+                let num;
+                if (currentNumScreen.includes('.')) {
+                  num = parseFloat(currentNumScreen);
+                } else {
+                  num = parseInt(currentNumScreen);
+                }
+
+                switch (this.currentOp) {
+                case '+':
+                  this.result += num;
+                  break;
+                case '-':
+                  this.result -= num;
+                  break;
+                case '/':
+                  this.result /= num;
+                  break;
+                case '*':
+                  this.result *= num;
+                  break;
+                case '%':
+                  this.result = this.result % num;
+                  break;
+                }
+
+                this.displayResult();
+              }
+
+              negateNum() {
+                if (this.currentNumScreen.textContent !== '0') {
+                  this.currentNumScreen.textContent = Math.abs(parseInt(this.currentNumScreen.textContent, 10)) * -1;
+                }
+              }
+
+              displayResult() {
+                this.currentNumScreen.textContent = this.result;
+                this.resultStatus = true;
+              }
+
+
+
+              printToNumScreen(item) {
+                let currText = this.currentNumScreen.textContent.trim();
+                this.currentNumScreen.textContent = currText + item;
+              }
+
+              bindEvents() {
+                Array.from(document.querySelectorAll('.digit')).forEach((digitButton) => {
+                digitButton.addEventListener('click', this.handleDigitClick);
+                });
+
+                document.querySelectorAll('.op').forEach((opButton) => {
+                opButton.addEventListener('click', this.handleOpClick);
+                });
+
+                document.querySelector('.result').addEventListener('click', this.handleResClick);
+                document.querySelector('.neg').addEventListener('click', this.negateNum);
+                document.querySelector('.clearAll').addEventListener('click', this.clearAll);
+                document.querySelector('.clear').addEventListener('click', this.clear);
+                document.querySelector('.point').addEventListener('click', this.handleDotClick);
+              }
       }
     </script>
   </body>
