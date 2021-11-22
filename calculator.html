@@ -14,29 +14,31 @@
       // TODO add change skins functionality, add buttons for that
             document.addEventListener('DOMContentLoaded', (event) => {
               const calculator = new Calculator();
+              // console.log(calculator.currentNumScreen)
               calculator.drawScreen();
+              calculator.initScreen();
               calculator.drawButtonSecton();
               calculator.bindEvents();
             });
-
+            
             class Calculator {
               constructor() {
                 this.buttons = [{'CE': 'global clear'}, {'C': 'clear'}, {'NEG': 'negative'}, {'/': 'divide'},
                 {'7': '7'}, {'8': '8'}, {'9': '9'}, {'*': 'multiply'}, {'4': '4'}, {'5': '5'}, {'6': '6'},
                 {'-': 'subtract'}, {'1': '1'}, {'2': '2'}, {'3': '3'}, {'+': 'add'}, {'0': '0'}, {'.': 'point'},
                 {'%': 'percent'}, {'=': 'equals'}];
-                // this.total = 0;
-                // this.lastOperation = '';
-                // this.subtotal = 0; // window top part
-                // this.currentNumber = 0; // window bottom part
-
-                this.operationsScreen = document.querySelector('#screen #top-section'); // top part
-                this.currentNumScreen = document.querySelector('#screen #bottom-section'); // bottom part
+                
+                this.operationsScreen = null; // top part
+                this.currentNumScreen = null; // bottom part
                 this.result = 0;
                 this.currentOp = '+';
                 this.resultStatus =  false;
-
                 
+                
+              }
+              initScreen() {
+                this.operationsScreen = document.querySelector('#screen #top-section');
+                this.currentNumScreen = document.querySelector('#screen #bottom-section'); // bottom part
               }
 
               drawScreen() {
@@ -108,6 +110,7 @@
               }
 
               printDigit(digit) {
+                console.log(this.currentNumScreen)
                 if (this.currentNumScreen.textContent === '0') {
                   this.clearCurrNumScreen();
                 }
@@ -135,13 +138,13 @@
               clearAll(event) {
                 this.clear(event);
                 this.clearOpScreen();
-                res.reset();
+                this.reset();
               }
 
               clear(event) {
                 event.preventDefault();
-                this.cleaCurrNumScreen();
-                this.currNumScreen.textContent = '0';
+                this.clearCurrNumScreen();
+                this.currentNumScreen.textContent = '0';
               }
 
               handleResClick(event) {
@@ -173,7 +176,7 @@
                 this.operationsScreen.textContent = prevOperationText + numAndOpToAdd;
               }
 
-              cleaCurrNumScreen() {
+              clearCurrNumScreen() {
                 this.currentNumScreen.textContent = '';
               }
 
@@ -231,18 +234,18 @@
 
               bindEvents() {
                 Array.from(document.querySelectorAll('.digit')).forEach((digitButton) => {
-                digitButton.addEventListener('click', this.handleDigitClick);
+                digitButton.addEventListener('click', this.handleDigitClick.bind(this));
                 });
 
                 document.querySelectorAll('.op').forEach((opButton) => {
-                opButton.addEventListener('click', this.handleOpClick);
+                opButton.addEventListener('click', this.handleOpClick.bind(this));
                 });
 
-                document.querySelector('.result').addEventListener('click', this.handleResClick);
-                document.querySelector('.neg').addEventListener('click', this.negateNum);
-                document.querySelector('.clearAll').addEventListener('click', this.clearAll);
-                document.querySelector('.clear').addEventListener('click', this.clear);
-                document.querySelector('.point').addEventListener('click', this.handleDotClick);
+                document.querySelector('.result').addEventListener('click', this.handleResClick.bind(this));
+                document.querySelector('.neg').addEventListener('click', this.negateNum.bind(this));
+                document.querySelector('.clearAll').addEventListener('click', this.clearAll.bind(this));
+                document.querySelector('.clear').addEventListener('click', this.clear.bind(this));
+                document.querySelector('.point').addEventListener('click', this.handleDotClick.bind(this));
               }
       }
     </script>
