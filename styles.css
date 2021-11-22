@@ -18,24 +18,23 @@ body {
   height: 147px;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
-  
+
 }
 
 #top-section {
-  display: block;
   height: 40%;
-  background: bisque;
   font-size: 18px;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  font-size: 24px;
+  padding-left: 20px;
+  padding-top: 20px;
   
 }
 
 #bottom-section {
-  display: block;
   height: 60%;
-  background: aquamarine;
-  font-size: 36px;
+  font-size: 50px;
   text-align: right;
   padding-right: 10px;
 }
@@ -73,6 +72,6 @@ body {
   background: #2b2d42;
 }
 
-.c-ce {
+.c, .ce {
   background: #e07a5f;
-}
+} 
