@@ -14,7 +14,6 @@
       // TODO add change skins functionality, add buttons for that
             document.addEventListener('DOMContentLoaded', (event) => {
               const calculator = new Calculator();
-              // console.log(calculator.currentNumScreen)
               calculator.drawScreen();
               calculator.initScreen();
               calculator.drawButtonSecton();
@@ -22,12 +21,7 @@
             });
             
             class Calculator {
-              constructor() {
-                this.buttons = [{'CE': 'global clear'}, {'C': 'clear'}, {'NEG': 'negative'}, {'/': 'divide'},
-                {'7': '7'}, {'8': '8'}, {'9': '9'}, {'*': 'multiply'}, {'4': '4'}, {'5': '5'}, {'6': '6'},
-                {'-': 'subtract'}, {'1': '1'}, {'2': '2'}, {'3': '3'}, {'+': 'add'}, {'0': '0'}, {'.': 'point'},
-                {'%': 'percent'}, {'=': 'equals'}];
-                
+              constructor() {    
                 this.operationsScreen = null; // top part
                 this.currentNumScreen = null; // bottom part
                 this.result = 0;
@@ -36,6 +30,12 @@
                 
                 
               }
+
+              static buttons = [{'CE': 'global clear'}, {'C': 'clear'}, {'NEG': 'negative'}, {'/': 'divide'},
+                {'7': '7'}, {'8': '8'}, {'9': '9'}, {'*': 'multiply'}, {'4': '4'}, {'5': '5'}, {'6': '6'},
+                {'-': 'subtract'}, {'1': '1'}, {'2': '2'}, {'3': '3'}, {'+': 'add'}, {'0': '0'}, {'.': 'point'},
+                {'%': 'percent'}, {'=': 'equals'}];
+
               initScreen() {
                 this.operationsScreen = document.querySelector('#screen #top-section');
                 this.currentNumScreen = document.querySelector('#screen #bottom-section'); // bottom part
@@ -75,7 +75,7 @@
               createButtons() {
                 // C - global clear
                 // ce - clear entry
-                const buttonTags = this.buttons;
+                const buttonTags = Calculator.buttons;
 
                 const buttonWrapperDiv = document.querySelector('.btn-wrapper');
                 buttonTags.forEach(obj => {
@@ -93,7 +93,7 @@
                     } else if (value ==='CE') {
                       button.classList.add('clear');
                     }
-                  } else if (['/', '*', '+', '-'].includes(value)) {
+                  } else if (['/', '*', '+', '-', '%'].includes(value)) {
                     button.classList.add('op');
                   } else if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(value)) {
                     button.classList.add('digit');
