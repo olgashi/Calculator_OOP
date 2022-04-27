@@ -4,6 +4,8 @@
   <img width="55" src="https://user-images.githubusercontent.com/41551585/165620814-7ab3b4b4-ae3a-4460-9845-a7fc8f13389b.svg"/>
 </div>
 
+<hr>
+
 ### Calculator
 Calculator application built with vanilla Javascript and CSS.
 
