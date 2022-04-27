@@ -10,3 +10,5 @@
 Calculator application built with vanilla Javascript and CSS.
 
 Deployed [here](https://calculator-oop-app.herokuapp.com)
+
+![calculator](https://user-images.githubusercontent.com/41551585/165632168-0f5b0e94-fbbd-4223-ade3-b7e4cf5f29fd.gif)
